@@ -10,12 +10,41 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
-    public function indexAction()
-    {
-        return new ViewModel();
-    }
+	/**
+	 * Главная страница
+	 *
+	 * @return ViewModel
+	 */
+	public function indexAction()
+	{
+		return new ViewModel();
+	}
+
+	/**
+	 * Получаем список авто
+	 *
+	 * @return JsonModel
+	 */
+	public function listAction()
+	{
+		$car = [
+			'brand' => 'bmw',
+			'model' => 'X6',
+			'config' => '',
+			'power' => 200,
+			'color' => 'red',
+			'image' => 'bmw.jpg',
+			'price' => 4000000,
+		];
+
+		return new JsonModel([
+			'success' => true,
+			'cars' => [$car, $car],
+		]);
+	}
 }

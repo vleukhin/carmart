@@ -22,6 +22,16 @@ return array(
                     ),
                 ),
             ),
+	        'cars_list' => array(
+		        'type' => 'Zend\Mvc\Router\Http\Literal',
+		        'options' => array(
+			        'route'    => '/cars/list',
+			        'defaults' => array(
+				        'controller' => 'Application\Controller\Index',
+				        'action'     => 'list',
+			        ),
+		        ),
+	        ),
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -93,6 +103,9 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
+	    'strategies' => array(
+		    'ViewJsonStrategy',
+	    ),
     ),
     // Placeholder for console routes
     'console' => array(
