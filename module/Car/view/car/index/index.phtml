@@ -1,4 +1,7 @@
 <?php $this->inlineScript()->prependFile($this->basePath('js/cars/index.js')); ?>
+<?php $this->inlineScript()->prependFile($this->basePath('js/sweetalert/sweetalert.min.js')); ?>
+
+<?php $this->headLink()->prependStylesheet($this->basePath('css/sweetalert/sweetalert.css')); ?>
 
 <div id="cars">
 	<table class="table table-stripped">

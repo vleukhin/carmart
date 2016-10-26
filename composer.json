@@ -13,5 +13,8 @@
     },
     "autoload": {
         "psr-0": { "Car": "module/Car/src/" }
+    },
+    "require-dev": {
+        "fzaninotto/faker": "^1.6"
     }
 }

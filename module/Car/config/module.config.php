@@ -39,6 +39,17 @@ return array(
 					),
 				),
 			),
+
+			'cars_generate' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '/cars/generate',
+					'defaults' => array(
+						'controller' => 'Car\Controller\Car',
+						'action' => 'generate',
+					),
+				),
+			),
 		),
 	),
 	'controllers' => array(
@@ -68,17 +79,7 @@ return array(
 	// Placeholder for console routes
 	'console' => array(
 		'router' => array(
-			'routes' => array(
-				'db-seed' => array(
-					'options' => array(
-						'route'    => 'db:seed',
-						'defaults' => array(
-							'controller' => 'Car\Controller\Car',
-							'action'     => 'sbSeed'
-						)
-					)
-				)
-			),
+			'routes' => array(),
 		),
 	),
 );

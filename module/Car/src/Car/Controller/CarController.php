@@ -2,6 +2,7 @@
 
 namespace Car\Controller;
 
+use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
@@ -16,9 +17,18 @@ class CarController extends AbstractActionController
 	 */
 	public function listAction()
 	{
+		$success = true;
+
+		try{
+			$cars = $this->getCarTable()->fetchAll();
+		}
+		catch (InvalidQueryException $e){
+			$success = false;
+		}
+
 		$result = [
-			'success' => true,
-			'cars' => $this->getCarTable()->fetchAll(),
+			'success' => $success,
+			'cars' => !empty($cars) ?: [],
 		];
 
 		return new JsonModel($result, ['prettyPrint' => true]);
@@ -30,6 +40,12 @@ class CarController extends AbstractActionController
 			$sm = $this->getServiceLocator();
 			$this->carTable = $sm->get('Car\Model\CarTable');
 		}
+
 		return $this->carTable;
+	}
+
+	public function generateAction()
+	{
+		return new JsonModel(['test'], ['prettyPrint' => true]);
 	}
 }
