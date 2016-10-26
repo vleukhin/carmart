@@ -7,6 +7,8 @@ use Zend\View\Model\JsonModel;
 
 class CarController extends AbstractActionController
 {
+	protected $carTable;
+
 	/**
 	 * Получаем список авто
 	 *
@@ -14,21 +16,20 @@ class CarController extends AbstractActionController
 	 */
 	public function listAction()
 	{
-		$car = [
-			'brand' => 'bmw',
-			'model' => 'X6',
-			'config' => '',
-			'power' => 200,
-			'color' => 'red',
-			'image' => 'bmw.jpg',
-			'price' => 4000000,
-		];
-
 		$result = [
 			'success' => true,
-			'cars' => [$car, $car],
+			'cars' => $this->getCarTable()->fetchAll(),
 		];
 
 		return new JsonModel($result, ['prettyPrint' => true]);
+	}
+
+	public function getCarTable()
+	{
+		if (!$this->carTable) {
+			$sm = $this->getServiceLocator();
+			$this->carTable = $sm->get('Car\Model\CarTable');
+		}
+		return $this->carTable;
 	}
 }

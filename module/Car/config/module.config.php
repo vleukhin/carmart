@@ -34,7 +34,7 @@ return array(
 				'options' => array(
 					'route' => '/cars/list',
 					'defaults' => array(
-						'controller' => 'Car\Controller\Index',
+						'controller' => 'Car\Controller\Car',
 						'action' => 'list',
 					),
 				),
@@ -68,7 +68,17 @@ return array(
 	// Placeholder for console routes
 	'console' => array(
 		'router' => array(
-			'routes' => array(),
+			'routes' => array(
+				'db-seed' => array(
+					'options' => array(
+						'route'    => 'db:seed',
+						'defaults' => array(
+							'controller' => 'Car\Controller\Car',
+							'action'     => 'sbSeed'
+						)
+					)
+				)
+			),
 		),
 	),
 );

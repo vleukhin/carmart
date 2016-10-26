@@ -9,6 +9,11 @@
 
 namespace Car;
 
+use Car\Model\Car;
+use Car\Model\CarTable;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
+
 class Module
 {
     public function getConfig()
@@ -26,4 +31,23 @@ class Module
             ),
         );
     }
+
+	public function getServiceConfig()
+	{
+		return array(
+			'factories' => array(
+				'Car\Model\CarTable' =>  function($sm) {
+					$tableGateway = $sm->get('CarTableGateway');
+					$table = new CarTable($tableGateway);
+					return $table;
+				},
+				'CarTableGateway' => function ($sm) {
+					$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+					$resultSetPrototype = new ResultSet();
+					$resultSetPrototype->setArrayObjectPrototype(new Car());
+					return new TableGateway('car', $dbAdapter, null, $resultSetPrototype);
+				},
+			),
+		);
+	}
 }
