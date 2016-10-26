@@ -3,7 +3,10 @@
 
 <?php $this->headLink()->prependStylesheet($this->basePath('css/sweetalert/sweetalert.css')); ?>
 
+
 <div id="cars">
+	<button class="btn btn-primary" v-on:click="generateList">Сгенерировать список</button>
+	<br><br>
 	<table class="table table-stripped">
 		<tr>
 			<th>Марка</th>

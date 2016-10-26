@@ -88,6 +88,6 @@ class CarController extends AbstractActionController
 			$this->getCarTable()->saveCar($car);
 		}
 
-		return new JsonModel(['test'], ['prettyPrint' => true]);
+		return new JsonModel(['cars' => $this->getCarTable()->fetchAll()->toArray()], ['prettyPrint' => true]);
 	}
 }
