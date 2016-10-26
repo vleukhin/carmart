@@ -68,6 +68,14 @@ class Car
 	public $status;
 
 	/**
+	 * Статусы авто
+	 */
+	const STATUS_FREE = 1;
+	const STATUS_RESERVED = 2;
+	const STATUS_SOLD = 3;
+
+
+	/**
 	 * Метод заполнения полей модели
 	 *
 	 * @param $data
