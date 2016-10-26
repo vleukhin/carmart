@@ -10,5 +10,8 @@
     "require": {
         "php": ">=5.5",
         "zendframework/zendframework": "~2.5"
+    },
+    "autoload": {
+        "psr-0": { "Car": "module/Car/src/" }
     }
 }
