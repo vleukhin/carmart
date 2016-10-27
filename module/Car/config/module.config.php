@@ -53,6 +53,16 @@ return array(
 					),
 				),
 			),
+			'cars_generate' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '/cars/generate',
+					'defaults' => array(
+						'controller' => 'Car\Controller\Car',
+						'action' => 'generate',
+					),
+				),
+			),
 		),
 	),
 	'controllers' => array(
