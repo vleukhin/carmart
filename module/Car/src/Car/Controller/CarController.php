@@ -90,4 +90,61 @@ class CarController extends AbstractActionController
 
 		return new JsonModel(['cars' => $this->getCarTable()->fetchAll()->toArray()], ['prettyPrint' => true]);
 	}
+
+	/**
+	 * Метод обновления статуса авто
+	 *
+	 * @return void|JsonModel
+	 */
+	public function updateStatusAction()
+	{
+		$request = $this->getRequest();
+
+		if ($request->isPost())
+		{
+			$error = '';
+			$result = [];
+
+			$id = (int) $this->params()->fromRoute('id', 0);
+
+			try
+			{
+				$car = $this->getCarTable()->getCar($id);
+			}
+			/**
+			 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
+			 * Приходится ловить всё
+			 */
+			catch (\Exception $e){
+				$error = 'Авто не найдено';
+			}
+
+			if (isset($car))
+			{
+				$status_id = $request->getPost('status_id');
+
+				if (in_array($status_id, Car::getConstants('STATUS')))
+				{
+					$car->status = $status_id;
+					$this->getCarTable()->saveCar($car);
+				}
+				else
+				{
+					$error = 'Неверный статус';
+				}
+
+				$result['car'] = $car;
+			}
+
+			$result['success'] = empty($error);
+			if (!empty($error))
+			{
+				$result['error'] = $error;
+			}
+
+			return new JsonModel($result, ['prettyPrint' => true]);
+		}
+
+		$this->getResponse()->setStatusCode(404);
+	}
 }

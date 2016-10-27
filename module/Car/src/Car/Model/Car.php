@@ -74,7 +74,6 @@ class Car
 	const STATUS_RESERVED = 2;
 	const STATUS_SOLD = 3;
 
-
 	/**
 	 * Метод заполнения полей модели
 	 *
@@ -104,5 +103,31 @@ class Car
 		}
 
 		return $array;
+	}
+
+	/**
+	 * Получаем список констант класса
+	 *
+	 * @param string $prefix фильтр по префиксу
+	 *
+	 * @return array
+	 */
+	public static function getConstants($prefix = null)
+	{
+		$reflect = new \ReflectionClass(static::class);
+		$constants =  $reflect->getConstants();
+
+		if (!is_null($prefix))
+		{
+			foreach ($constants as $name => $value)
+			{
+				if (strpos($name, $prefix) !== 0)
+				{
+					unset($constants[$name]);
+				}
+			}
+		}
+
+		return $constants;
 	}
 }

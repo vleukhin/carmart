@@ -40,13 +40,16 @@ return array(
 				),
 			),
 
-			'cars_generate' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+			'cars_update_status' => array(
+				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
-					'route' => '/cars/generate',
+					'route'    => '/cars/:id/update-status',
+					'constraints' => array(
+						'id'     => '[0-9]+',
+					),
 					'defaults' => array(
 						'controller' => 'Car\Controller\Car',
-						'action' => 'generate',
+						'action' => 'updateStatus',
 					),
 				),
 			),

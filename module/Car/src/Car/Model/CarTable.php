@@ -33,7 +33,7 @@ class CarTable
 	 * Метод поиска авто по id
 	 *
 	 * @param $id
-	 * @return array|\ArrayObject|null
+	 * @return array|\ArrayObject|null|Car
 	 * @throws \Exception
 	 */
 	public function getCar($id)

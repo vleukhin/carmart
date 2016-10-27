@@ -9,6 +9,7 @@
 	<br><br>
 	<table class="table table-stripped">
 		<tr>
+			<th>ID</th>
 			<th>Марка</th>
 			<th>Модель</th>
 			<th>Статус</th>
@@ -19,6 +20,7 @@
 			<th>Цена</th>
 		</tr>
 		<tr v-for="car in cars">
+			<td>{{ car.id }}</td>
 			<td>{{ car.brand }}</td>
 			<td>{{ car.model }}</td>
 			<td><span class="label" :class="getStatusLabelClass(car.status)">{{ getStatusName(car.status) }}</span></td>
