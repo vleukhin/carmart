@@ -27,8 +27,22 @@
 			<td>{{ car.config }}</td>
 			<td>{{ car.power }}</td>
 			<td>{{ car.color }}</td>
-			<td>{{ car.image }}</td>
+			<td>
+				<a class="fancybox" rel="group" :href="car.image">
+					<img :src="car.image" alt="" width="50" />
+				</a>
+			</td>
 			<td>{{ formatPrice(car.price) }} р.</td>
 		</tr>
 	</table>
 </div>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="/js/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".fancybox").fancybox();
+	});
+</script>
