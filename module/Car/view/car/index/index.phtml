@@ -1,0 +1,48 @@
+<?php $this->inlineScript()->prependFile($this->basePath('js/cars/index.js')); ?>
+<?php $this->inlineScript()->prependFile($this->basePath('js/sweetalert/sweetalert.min.js')); ?>
+
+<?php $this->headLink()->prependStylesheet($this->basePath('css/sweetalert/sweetalert.css')); ?>
+
+
+<div id="cars">
+	<button class="btn btn-primary" v-on:click="generateList">Сгенерировать список</button>
+	<br><br>
+	<table class="table table-stripped">
+		<tr>
+			<th>ID</th>
+			<th>Марка</th>
+			<th>Модель</th>
+			<th>Статус</th>
+			<th>Комплектация</th>
+			<th>Мощность</th>
+			<th>Цвет</th>
+			<th>Фото</th>
+			<th>Цена</th>
+		</tr>
+		<tr v-for="car in cars">
+			<td>{{ car.id }}</td>
+			<td>{{ car.brand }}</td>
+			<td>{{ car.model }}</td>
+			<td><span class="label" :class="getStatusLabelClass(car.status)">{{ getStatusName(car.status) }}</span></td>
+			<td>{{ car.config }}</td>
+			<td>{{ car.power }}</td>
+			<td>{{ car.color }}</td>
+			<td>
+				<a class="fancybox" rel="group" :href="car.image">
+					<img :src="car.image" alt="" width="50" />
+				</a>
+			</td>
+			<td>{{ formatPrice(car.price) }} р.</td>
+		</tr>
+	</table>
+</div>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="/js/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".fancybox").fancybox();
+	});
+</script>

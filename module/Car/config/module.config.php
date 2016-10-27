@@ -1,0 +1,88 @@
+<?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+
+namespace Car;
+
+return array(
+	'db' => array(
+		'driver' => 'Pdo',
+		'dsn' => 'mysql:dbname=carmart;host=localhost',
+		'driver_options' => array(
+			\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
+		),
+	),
+	'router' => array(
+		'routes' => array(
+			'home' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '/',
+					'defaults' => array(
+						'controller' => 'Car\Controller\Index',
+						'action' => 'index',
+					),
+				),
+			),
+			'cars_list' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '/cars/list',
+					'defaults' => array(
+						'controller' => 'Car\Controller\Car',
+						'action' => 'list',
+					),
+				),
+			),
+
+			'cars_update_status' => array(
+				'type' => 'Zend\Mvc\Router\Http\Segment',
+				'options' => array(
+					'route'    => '/cars/:id/update-status',
+					'constraints' => array(
+						'id'     => '[0-9]+',
+					),
+					'defaults' => array(
+						'controller' => 'Car\Controller\Car',
+						'action' => 'updateStatus',
+					),
+				),
+			),
+		),
+	),
+	'controllers' => array(
+		'invokables' => array(
+			'Car\Controller\Index' => 'Car\Controller\IndexController',
+			'Car\Controller\Car' => 'Car\Controller\CarController',
+		),
+	),
+	'view_manager' => array(
+		'template_path_stack' => array(
+			'album' => __DIR__ . '/../view',
+		),
+		'strategies' => array(
+			'ViewJsonStrategy',
+		),
+	),
+	'service_manager' => array(
+		'abstract_factories' => array(
+			'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+			'Zend\Log\LoggerAbstractServiceFactory',
+		),
+		'factories' => array(
+			'translator' => 'Zend\Mvc\Service\TranslatorServiceFactory',
+			'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
+		),
+	),
+	// Placeholder for console routes
+	'console' => array(
+		'router' => array(
+			'routes' => array(),
+		),
+	),
+);
