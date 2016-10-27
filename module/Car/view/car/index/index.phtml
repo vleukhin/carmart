@@ -11,6 +11,7 @@
 		<tr>
 			<th>Марка</th>
 			<th>Модель</th>
+			<th>Статус</th>
 			<th>Комплектация</th>
 			<th>Мощность</th>
 			<th>Цвет</th>
@@ -19,7 +20,8 @@
 		</tr>
 		<tr v-for="car in cars">
 			<td>{{ car.brand }}</td>
-			<td>{{ car.model}}</td>
+			<td>{{ car.model }}</td>
+			<td><span class="label" :class="getStatusLabelClass(car.status)">{{ getStatusName(car.status) }}</span></td>
 			<td>{{ car.config }}</td>
 			<td>{{ car.power }}</td>
 			<td>{{ car.color }}</td>

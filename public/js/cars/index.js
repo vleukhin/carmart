@@ -50,6 +50,26 @@ var CarsManager = new Vue({
 
 		formatPrice(price){
 			return number_format(price, 0, '.', ' ');
+		},
+
+		getStatusName(status){
+			var statuses = {
+				1: 'Свободен',
+				2: 'Збронирован',
+				3: 'Продан',
+			};
+
+			return statuses[status];
+		},
+
+		getStatusLabelClass(status){
+			var statuses = {
+				1: 'label-success',
+				2: 'label-warning',
+				3: 'label-danger',
+			};
+
+			return statuses[status];
 		}
 	}
 });
