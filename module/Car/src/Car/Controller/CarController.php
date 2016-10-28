@@ -6,24 +6,34 @@ use Car\Model\Car;
 use Car\Model\CarTable;
 use Faker\Factory as FakerFactory;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
-class CarController extends AbstractActionController
+class CarController extends AbstractRestfulController
 {
 	protected $carTable;
+
+	/**
+	 * CarController constructor.
+	 *
+	 * @param CarTable $carTable
+	 */
+	public function __construct(CarTable $carTable)
+	{
+		$this->carTable = $carTable;
+	}
 
 	/**
 	 * Получаем список авто
 	 *
 	 * @return JsonModel
 	 */
-	public function listAction()
+	public function getList()
 	{
 		$success = true;
 
 		try{
-			$cars = $this->getCarTable()->fetchAll();
+			$cars = $this->carTable->fetchAll();
 		}
 		catch (InvalidQueryException $e){
 			$success = false;
@@ -34,24 +44,9 @@ class CarController extends AbstractActionController
 			'cars' => !empty($cars) ? $cars->toArray(): [],
 		];
 
-		return new JsonModel($result, ['prettyPrint' => true]);
+		return $this->response($result);
 	}
-
-	/**
-	 * Метод получения объекта таблицы авто
-	 *
-	 * @return CarTable
-	 */
-	public function getCarTable()
-	{
-		if (!$this->carTable) {
-			$sm = $this->getServiceLocator();
-			$this->carTable = $sm->get('Car\Model\CarTable');
-		}
-
-		return $this->carTable;
-	}
-
+	
 	/**
 	 * Метод генерации списка авто
 	 *
@@ -59,11 +54,12 @@ class CarController extends AbstractActionController
 	 */
 	public function generateAction()
 	{
-		$this->getCarTable()->create();
+		$this->carTable->create();
+		$cars = [];
 
 		$faker = FakerFactory::create();
 
-		for ($i = 1; $i < 30; $i++)
+		for ($i = 0; $i < 30; $i++)
 		{
 			$car = new Car();
 
@@ -85,66 +81,102 @@ class CarController extends AbstractActionController
 				'status' => Car::STATUS_FREE,
 			]);
 
-			$this->getCarTable()->saveCar($car);
+			$this->carTable->saveCar($car);
+			$cars[] = $car;
 		}
 
-		return new JsonModel(['cars' => $this->getCarTable()->fetchAll()->toArray()], ['prettyPrint' => true]);
+		return $this->response(['cars' => $cars]);
 	}
 
 	/**
-	 * Метод обновления статуса авто
+	 * Метод обновления авто
 	 *
+	 * @param mixed $id
+	 * @param mixed $data
 	 * @return void|JsonModel
 	 */
-	public function updateStatusAction()
+	public function update($id, $data)
 	{
-		$request = $this->getRequest();
+		$car = $this->findCar($id);
 
-		if ($request->isPost())
+		if ($car)
 		{
-			$error = '';
-			$result = [];
-
-			$id = (int) $this->params()->fromRoute('id', 0);
-
-			try
+			if (!empty($data['status']) and in_array($data['status'], Car::getConstants('STATUS')))
 			{
-				$car = $this->getCarTable()->getCar($id);
+				$car->status = $data['status'];
+				$this->carTable->saveCar($car);
 			}
-			/**
-			 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
-			 * Приходится ловить всё
-			 */
-			catch (\Exception $e){
-				$error = 'Авто не найдено';
-			}
-
-			if (isset($car))
+			else
 			{
-				$status_id = $request->getPost('status_id');
-
-				if (in_array($status_id, Car::getConstants('STATUS')))
-				{
-					$car->status = $status_id;
-					$this->getCarTable()->saveCar($car);
-				}
-				else
-				{
-					$error = 'Неверный статус';
-				}
-
-				$result['car'] = $car;
+				$error = 'Неверный статус';
 			}
 
-			$result['success'] = empty($error);
+			$result = [
+				'car' => $car,
+				'success' => empty($error),
+			];
+
 			if (!empty($error))
 			{
 				$result['error'] = $error;
 			}
 
-			return new JsonModel($result, ['prettyPrint' => true]);
+			return $this->response($result);
 		}
 
-		$this->getResponse()->setStatusCode(404);
+		return $this->response($this->notFoundAction());
+	}
+
+	/**
+	 * Return single resource
+	 *
+	 * @param  mixed $id
+	 * @return mixed
+	 */
+	public function get($id)
+	{
+		$car = $this->findCar($id);
+
+		if ($car)
+		{
+			return $this->response($car->toArray());
+		}
+
+		return $this->response($this->notFoundAction());
+	}
+
+	/**
+	 * Поиск авто по id
+	 *
+	 * @param $id
+	 * @return Car|null
+	 */
+	protected function findCar($id)
+	{
+		$car = null;
+
+		try
+		{
+			$car = $this->carTable->getCar($id);
+		}
+		/**
+		 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
+		 * Приходится ловить всё
+		 */
+		catch (\Exception $e){
+		}
+
+		return $car;
+	}
+
+	/**
+	 * Возвращаем ответ в JSON
+	 *
+	 * @param $data
+	 * @return JsonModel
+	 */
+	protected function response($data)
+	{
+		return new JsonModel($data, ['prettyPrint' => true]);
 	}
 }

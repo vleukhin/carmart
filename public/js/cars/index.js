@@ -2,7 +2,7 @@ var CarsManager = new Vue({
 	el: '#cars',
 
 	mounted: function() {
-		this.$http.get('/cars/list').then(function (response) {
+		this.$http.get('/cars').then(function (response) {
 			if (response.data.success){
 				this.cars = response.data.cars;
 			}
