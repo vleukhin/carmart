@@ -64,7 +64,7 @@ class CarController extends AbstractRestfulController
 
 		$faker = FakerFactory::create();
 
-		for ($i = 1; $i < 30; $i++)
+		for ($i = 0; $i < 30; $i++)
 		{
 			$car = new Car();
 
