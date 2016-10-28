@@ -9,12 +9,10 @@
     "homepage": "http://framework.zend.com/",
     "require": {
         "php": ">=5.5",
-        "zendframework/zendframework": "~2.5"
+        "zendframework/zendframework": "^2.5",
+        "fzaninotto/faker": "^1.6"
     },
     "autoload": {
         "psr-0": { "Car": "module/Car/src/" }
-    },
-    "require-dev": {
-        "fzaninotto/faker": "^1.6"
     }
 }
