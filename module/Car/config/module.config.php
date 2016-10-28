@@ -20,7 +20,7 @@ return array(
 	'router' => array(
 		'routes' => array(
 			'home' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'literal',
 				'options' => array(
 					'route' => '/',
 					'defaults' => array(
@@ -29,32 +29,20 @@ return array(
 					),
 				),
 			),
-			'cars_list' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+			'cars' => array(
+				'type'    => 'segment',
 				'options' => array(
-					'route' => '/cars/list',
+					'route'    => '/cars[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
 					'defaults' => array(
 						'controller' => 'Car\Controller\Car',
-						'action' => 'list',
-					),
-				),
-			),
-
-			'cars_update_status' => array(
-				'type' => 'Zend\Mvc\Router\Http\Segment',
-				'options' => array(
-					'route'    => '/cars/:id/update-status',
-					'constraints' => array(
-						'id'     => '[0-9]+',
-					),
-					'defaults' => array(
-						'controller' => 'Car\Controller\Car',
-						'action' => 'updateStatus',
 					),
 				),
 			),
 			'cars_generate' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'literal',
 				'options' => array(
 					'route' => '/cars/generate',
 					'defaults' => array(

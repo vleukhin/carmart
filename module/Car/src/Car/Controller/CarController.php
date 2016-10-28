@@ -7,9 +7,10 @@ use Car\Model\CarTable;
 use Faker\Factory as FakerFactory;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
-class CarController extends AbstractActionController
+class CarController extends AbstractRestfulController
 {
 	protected $carTable;
 
@@ -18,7 +19,7 @@ class CarController extends AbstractActionController
 	 *
 	 * @return JsonModel
 	 */
-	public function listAction()
+	public function getList()
 	{
 		$success = true;
 
@@ -60,6 +61,7 @@ class CarController extends AbstractActionController
 	public function generateAction()
 	{
 		$this->getCarTable()->create();
+		$cars = [];
 
 		$faker = FakerFactory::create();
 
@@ -86,9 +88,10 @@ class CarController extends AbstractActionController
 			]);
 
 			$this->getCarTable()->saveCar($car);
+			$cars[] = $car;
 		}
 
-		return new JsonModel(['cars' => $this->getCarTable()->fetchAll()->toArray()], ['prettyPrint' => true]);
+		return new JsonModel(['cars' => $cars], ['prettyPrint' => true]);
 	}
 
 	/**
@@ -96,7 +99,7 @@ class CarController extends AbstractActionController
 	 *
 	 * @return void|JsonModel
 	 */
-	public function updateStatusAction()
+	public function update($id, $data)
 	{
 		$request = $this->getRequest();
 
@@ -107,17 +110,7 @@ class CarController extends AbstractActionController
 
 			$id = (int) $this->params()->fromRoute('id', 0);
 
-			try
-			{
-				$car = $this->getCarTable()->getCar($id);
-			}
-			/**
-			 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
-			 * Приходится ловить всё
-			 */
-			catch (\Exception $e){
-				$error = 'Авто не найдено';
-			}
+
 
 			if (isset($car))
 			{
@@ -146,5 +139,58 @@ class CarController extends AbstractActionController
 		}
 
 		$this->getResponse()->setStatusCode(404);
+	}
+
+	/**
+	 * Return single resource
+	 *
+	 * @param  mixed $id
+	 * @return mixed
+	 */
+	public function get($id)
+	{
+		$car = $this->findCar($id);
+
+		if ($car)
+		{
+			return $this->response($car->toArray());
+		}
+
+		return $this->response($this->notFoundAction());
+	}
+
+	/**
+	 * Поиск авто по id
+	 *
+	 * @param $id
+	 * @return Car|null
+	 */
+	protected function findCar($id)
+	{
+		$car = null;
+
+		try
+		{
+			$car = $this->getCarTable()->getCar($id);
+		}
+			/**
+			 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
+			 * Приходится ловить всё
+			 */
+		catch (\Exception $e){
+		}
+
+		return $car;
+	}
+
+	/**
+	 * Возвращаем ответ в JSON
+	 *
+	 * @param $data
+	 * @return JsonModel
+	 */
+	protected function response($data)
+	{
+		return new JsonModel($data, ['prettyPrint' => true]);
 	}
 }
