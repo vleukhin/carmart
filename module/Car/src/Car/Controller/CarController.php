@@ -14,6 +14,16 @@ class CarController extends AbstractRestfulController
 	protected $carTable;
 
 	/**
+	 * CarController constructor.
+	 *
+	 * @param CarTable $carTable
+	 */
+	public function __construct(CarTable $carTable)
+	{
+		$this->carTable = $carTable;
+	}
+
+	/**
 	 * Получаем список авто
 	 *
 	 * @return JsonModel
@@ -23,7 +33,7 @@ class CarController extends AbstractRestfulController
 		$success = true;
 
 		try{
-			$cars = $this->getCarTable()->fetchAll();
+			$cars = $this->carTable->fetchAll();
 		}
 		catch (InvalidQueryException $e){
 			$success = false;
@@ -36,22 +46,7 @@ class CarController extends AbstractRestfulController
 
 		return $this->response($result);
 	}
-
-	/**
-	 * Метод получения объекта таблицы авто
-	 *
-	 * @return CarTable
-	 */
-	public function getCarTable()
-	{
-		if (!$this->carTable) {
-			$sm = $this->getServiceLocator();
-			$this->carTable = $sm->get('Car\Model\CarTable');
-		}
-
-		return $this->carTable;
-	}
-
+	
 	/**
 	 * Метод генерации списка авто
 	 *
@@ -59,7 +54,7 @@ class CarController extends AbstractRestfulController
 	 */
 	public function generateAction()
 	{
-		$this->getCarTable()->create();
+		$this->carTable->create();
 		$cars = [];
 
 		$faker = FakerFactory::create();
@@ -86,7 +81,7 @@ class CarController extends AbstractRestfulController
 				'status' => Car::STATUS_FREE,
 			]);
 
-			$this->getCarTable()->saveCar($car);
+			$this->carTable->saveCar($car);
 			$cars[] = $car;
 		}
 
@@ -109,7 +104,7 @@ class CarController extends AbstractRestfulController
 			if (!empty($data['status']) and in_array($data['status'], Car::getConstants('STATUS')))
 			{
 				$car->status = $data['status'];
-				$this->getCarTable()->saveCar($car);
+				$this->carTable->saveCar($car);
 			}
 			else
 			{
@@ -162,7 +157,7 @@ class CarController extends AbstractRestfulController
 
 		try
 		{
-			$car = $this->getCarTable()->getCar($id);
+			$car = $this->carTable->getCar($id);
 		}
 		/**
 		 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)

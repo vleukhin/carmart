@@ -56,7 +56,9 @@ return array(
 	'controllers' => array(
 		'invokables' => array(
 			'Car\Controller\Index' => 'Car\Controller\IndexController',
-			'Car\Controller\Car' => 'Car\Controller\CarController',
+		),
+		'factories' => array(
+			'Car\Controller\Car' => 'Car\Factory\CarControllerFactory',
 		),
 	),
 	'view_manager' => array(
