@@ -6,7 +6,6 @@ use Car\Model\Car;
 use Car\Model\CarTable;
 use Faker\Factory as FakerFactory;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
@@ -35,7 +34,7 @@ class CarController extends AbstractRestfulController
 			'cars' => !empty($cars) ? $cars->toArray(): [],
 		];
 
-		return new JsonModel($result, ['prettyPrint' => true]);
+		return $this->response($result);
 	}
 
 	/**
@@ -91,54 +90,46 @@ class CarController extends AbstractRestfulController
 			$cars[] = $car;
 		}
 
-		return new JsonModel(['cars' => $cars], ['prettyPrint' => true]);
+		return $this->response(['cars' => $cars]);
 	}
 
 	/**
-	 * Метод обновления статуса авто
+	 * Метод обновления авто
 	 *
+	 * @param mixed $id
+	 * @param mixed $data
 	 * @return void|JsonModel
 	 */
 	public function update($id, $data)
 	{
-		$request = $this->getRequest();
+		$car = $this->findCar($id);
 
-		if ($request->isPost())
+		if ($car)
 		{
-			$error = '';
-			$result = [];
-
-			$id = (int) $this->params()->fromRoute('id', 0);
-
-
-
-			if (isset($car))
+			if (!empty($data['status']) and in_array($data['status'], Car::getConstants('STATUS')))
 			{
-				$status_id = $request->getPost('status_id');
-
-				if (in_array($status_id, Car::getConstants('STATUS')))
-				{
-					$car->status = $status_id;
-					$this->getCarTable()->saveCar($car);
-				}
-				else
-				{
-					$error = 'Неверный статус';
-				}
-
-				$result['car'] = $car;
+				$car->status = $data['status'];
+				$this->getCarTable()->saveCar($car);
+			}
+			else
+			{
+				$error = 'Неверный статус';
 			}
 
-			$result['success'] = empty($error);
+			$result = [
+				'car' => $car,
+				'success' => empty($error),
+			];
+
 			if (!empty($error))
 			{
 				$result['error'] = $error;
 			}
 
-			return new JsonModel($result, ['prettyPrint' => true]);
+			return $this->response($result);
 		}
 
-		$this->getResponse()->setStatusCode(404);
+		return $this->response($this->notFoundAction());
 	}
 
 	/**
@@ -173,10 +164,10 @@ class CarController extends AbstractRestfulController
 		{
 			$car = $this->getCarTable()->getCar($id);
 		}
-			/**
-			 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
-			 * Приходится ловить всё
-			 */
+		/**
+		 * Zend не кидает конкретное исключение (да и зачем здесь вообще исключение?)
+		 * Приходится ловить всё
+		 */
 		catch (\Exception $e){
 		}
 
